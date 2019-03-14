@@ -22,6 +22,19 @@ def get_attributes_and_classes_from_csv(name, class_column, columns_to_cut=None,
     return X, Y
 
 
+def get_dataset(name):
+    X, Y = [], []
+    if name == 'iris':
+        X, Y = get_attributes_and_classes_from_csv(name, 4, separator=';')
+    if name == 'wine':
+        X, Y = get_attributes_and_classes_from_csv(name, 0)
+    if name == 'glass':
+        X, Y = get_attributes_and_classes_from_csv(name, 10, columns_to_cut=0)
+    if name == 'diabetes':
+        X, Y = get_attributes_and_classes_from_csv(name, 8)
+    return X, Y
+
+
 if __name__ == "__main__":
     wine = pd.read_csv("datasets/wine.csv", header=0)
     print(wine.head())

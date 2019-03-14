@@ -8,9 +8,7 @@ from methods import *
 digitize_methods = [digitize_column_cut]
 digitize = digitize_methods[0]
 
-X, Y = get_attributes_and_classes_from_csv('iris', 4, separator=';')
-# X, Y = get_attributes_and_classes_from_csv('wine', 0)
-
+X, Y = get_dataset('wine')
 X_test, Y_test = X[:20], Y[:20]
 nr_of_bins = 10
 

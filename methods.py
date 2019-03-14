@@ -7,6 +7,7 @@ def digitize_column_cut(column, nr_of_bins, bins=[]):
         _, bins = pd.cut(column, nr_of_bins, retbins=True)
     atr_digitized = np.digitize(column, bins)
     atr_bincount = np.bincount(atr_digitized)
+    atr_bincount = np.add(atr_bincount, np.ones(shape=(atr_bincount.shape), dtype=np.int))
     return atr_digitized, atr_bincount, bins
 
 
@@ -48,3 +49,27 @@ def get_X_test_classes(X_test, Y, attributes_probs, attributes_bins, digitize):
     probs_multiplied *= classes_probs
     return classes[probs_multiplied.argmax(axis=1)]
 
+
+def digitize_classes(Y):
+    _, indexes = np.unique(Y, return_inverse=True)
+    return indexes
+
+
+def get_train_and_test_data(X, Y, i):
+    X_train, X_test = split_set(X, i)
+    Y_train, Y_test = split_set(Y, i)
+    return X_train, Y_train, X_test, Y_test
+
+
+def split_set(set, i):
+    test = set[i]
+    train = np.concatenate([set[j] for j in range(len(set)) if j != i])
+    return train, test
+
+
+def split_data_to_chunks(X, Y, k):
+    data_len = Y.shape[0]
+    indices = np.arange(0, data_len, int(data_len / k) + 1)[1:]
+    X_splitted = np.vsplit(X, indices)
+    Y_splitted = np.split(Y, indices)
+    return X_splitted, Y_splitted
