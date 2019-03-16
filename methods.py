@@ -12,6 +12,8 @@ from sklearn.preprocessing import KBinsDiscretizer
 #     atr_bincount = np.bincount(atr_digitized)
 #     atr_bincount = np.add(atr_bincount, np.ones(shape=(atr_bincount.shape), dtype=np.int))
 #     return atr_digitized, atr_bincount, bins
+''' Digitizing methods '''
+
 
 def get_column_digitized(column, bins):
     atr_digitized = np.digitize(column, bins)
@@ -31,7 +33,6 @@ def digitize_column_by_frequency(column, nr_of_bins=10, bins=[]):
         column = copy.deepcopy(column)
         column.sort()
         bins = np.asarray(list(column)[::int(column.shape[0]/nr_of_bins)])
-        # bins = np.linspace(np.min(column), np.max(column), num=nr_of_bins+1, endpoint=True)
     return get_column_digitized(column, bins)
 
 
@@ -57,6 +58,9 @@ def digitize_classes(Y):
     return indexes
 
 
+''' Methods related to normal bayes '''
+
+
 def count_conditional_probabilities(column, Y, c, bins):
     atr_in_class = column[Y == c]
     atr_in_class_bincount = np.bincount(np.digitize(atr_in_class, bins), minlength=len(bins) + 1)
@@ -65,7 +69,7 @@ def count_conditional_probabilities(column, Y, c, bins):
     return atr_in_class_prob
 
 
-def bayes(X, Y, attributes_bins):
+def bayes_digitized(X, Y, attributes_bins):
     classes = np.unique(Y)
     attributes_probs = []
 
@@ -79,7 +83,7 @@ def bayes(X, Y, attributes_bins):
     return attributes_probs
 
 
-def get_X_test_classes(X_test, Y, attributes_probs, attributes_bins, digitize):
+def get_predicted_classes_normally(X_test, Y, attributes_probs, attributes_bins, digitize):
     classes, classes_bincounts = np.unique(Y, return_counts=True)
     classes_probs = classes_bincounts / len(Y)
     probs_multiplied = np.ones((X_test.shape[0], len(classes)))
@@ -91,6 +95,37 @@ def get_X_test_classes(X_test, Y, attributes_probs, attributes_bins, digitize):
 
     probs_multiplied *= classes_probs
     return classes[probs_multiplied.argmax(axis=1)]
+
+
+''' Methods related to gaussian bayes '''
+
+
+def bayes_gaussian(X, Y):
+    classes = np.unique(Y)
+    means_and_stds = np.empty(shape=(classes.shape[0], 2, X.shape[1]))
+    for c in range(classes.shape[0]):
+        means_and_stds[c, 0] = np.mean(X[Y == classes[c]], axis=0)
+        means_and_stds[c, 1] = np.std(X[Y == classes[c]], axis=0)
+    return means_and_stds
+
+
+def get_predicted_classes_gaussian(X_test, Y, means_and_stds):
+    classes, classes_bincounts = np.unique(Y, return_counts=True)
+    classes_probs = classes_bincounts / len(Y)
+    probs_multiplied = np.ones((X_test.shape[0], len(classes)))
+
+    for i in range(X_test.shape[1]):
+        column = X_test[:, i]
+        means, stds = means_and_stds[:, 0, i].reshape(1, -1), means_and_stds[:, 1, i].reshape(1, -1)
+
+        probs = (1/(stds * np.sqrt(2*np.pi))) * np.exp(- np.power(column.reshape(-1, 1) - means, 2) / np.power(2 * stds, 2))
+        probs_multiplied *= probs
+
+    probs_multiplied *= classes_probs
+    return classes[probs_multiplied.argmax(axis=1)]
+
+
+''' Methods related to cross validation '''
 
 
 def get_train_and_test_data(X, Y, i):
