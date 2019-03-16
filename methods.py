@@ -1,14 +1,50 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import KBinsDiscretizer
 
 
-def digitize_column_cut(column, nr_of_bins, bins=[]):
-    if len(bins) == 0:
-        _, bins = pd.cut(column, nr_of_bins, retbins=True)
+# def digitize_column_cut(column, nr_of_bins=10, bins=[]):
+#     if len(bins) == 0:
+#         _, bins = pd.cut(column, nr_of_bins, retbins=True)
+#     atr_digitized = np.digitize(column, bins)
+#     atr_bincount = np.bincount(atr_digitized)
+#     atr_bincount = np.add(atr_bincount, np.ones(shape=(atr_bincount.shape), dtype=np.int))
+#     return atr_digitized, atr_bincount, bins
+
+def get_column_digitized(column, bins):
     atr_digitized = np.digitize(column, bins)
     atr_bincount = np.bincount(atr_digitized)
     atr_bincount = np.add(atr_bincount, np.ones(shape=(atr_bincount.shape), dtype=np.int))
     return atr_digitized, atr_bincount, bins
+
+
+def digitize_column_equally(column, nr_of_bins=10, bins=[]):
+    if len(bins) == 0:
+        bins = np.linspace(np.min(column), np.max(column), num=nr_of_bins+1, endpoint=True)
+    return get_column_digitized(column, bins)
+
+
+def digitize_column_by_frequency(column, nr_of_bins=10, bins=[]):
+    if len(bins) == 0:
+        bins = np.linspace(np.min(column), np.max(column), num=nr_of_bins+1, endpoint=True)
+    return get_column_digitized(column, bins)
+
+
+def digitize_column_kmeans(column, nr_of_bins=10, bins=[]):
+    if len(bins) == 0:
+        discretizer = KBinsDiscretizer(n_bins=nr_of_bins, encode='ordinal', strategy='uniform')
+        discretizer.fit(column.reshape(-1, 1))
+        bins = discretizer.bin_edges_[0].astype(float)
+    return get_column_digitized(column, bins)
+
+
+def digitize_X(X, digitize, nr_of_bins):
+    attributes_bins = []
+    for i in range(X.shape[1]):
+        column = X[:, i]
+        atr_digitized, atr_bincount, bins = digitize(column, nr_of_bins=nr_of_bins)
+        attributes_bins.append(bins)
+    return attributes_bins
 
 
 def count_conditional_probabilities(column, Y, c, bins):
@@ -19,21 +55,18 @@ def count_conditional_probabilities(column, Y, c, bins):
     return atr_in_class_prob
 
 
-def bayes(X, Y, digitize, nr_of_bins):
+def bayes(X, Y, attributes_bins):
     classes = np.unique(Y)
-    attributes_probs, attributes_bins = [], []
+    attributes_probs = []
 
     for i in range(X.shape[1]):
         column = X[:, i]
-        atr_digitized, atr_bincount, bins = digitize(column, nr_of_bins)
-        attributes_bins.append(bins)
-
         probs = []
         for c in classes:
-            probs.append(count_conditional_probabilities(column, Y, c, bins))
+            probs.append(count_conditional_probabilities(column, Y, c, attributes_bins[i]))
         attributes_probs.append(np.array(probs).T)
 
-    return attributes_probs, attributes_bins
+    return attributes_probs
 
 
 def get_X_test_classes(X_test, Y, attributes_probs, attributes_bins, digitize):
@@ -43,7 +76,7 @@ def get_X_test_classes(X_test, Y, attributes_probs, attributes_bins, digitize):
 
     for i in range(X_test.shape[1]):
         column = X_test[:, i]
-        atr_digitized, atr_bincount, bins = digitize(column, attributes_bins[i])
+        atr_digitized, atr_bincount, bins = digitize(column, bins=attributes_bins[i])
         probs_multiplied *= attributes_probs[i][atr_digitized]
 
     probs_multiplied *= classes_probs
