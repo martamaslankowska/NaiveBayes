@@ -13,7 +13,7 @@ from drawing import *
 
 database_name = 'wine'
 
-digitize_methods = [digitize_column_equally, digitize_column_by_frequency, digitize_column_kmeans]
+digitize_methods = [digitize_equally, digitize_by_frequency, digitize_kmeans]
 digitize = digitize_methods[2]
 nr_of_bins = 10
 

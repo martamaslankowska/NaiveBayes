@@ -22,13 +22,13 @@ def get_column_digitized(column, bins):
     return atr_digitized, atr_bincount, bins
 
 
-def digitize_column_equally(column, nr_of_bins=10, bins=[]):
+def digitize_equally(column, nr_of_bins=10, bins=[]):
     if len(bins) == 0:
         bins = np.linspace(np.min(column), np.max(column), num=nr_of_bins+1, endpoint=True)
     return get_column_digitized(column, bins)
 
 
-def digitize_column_by_frequency(column, nr_of_bins=10, bins=[]):
+def digitize_by_frequency(column, nr_of_bins=10, bins=[]):
     if len(bins) == 0:
         column = copy.deepcopy(column)
         column.sort()
@@ -36,7 +36,7 @@ def digitize_column_by_frequency(column, nr_of_bins=10, bins=[]):
     return get_column_digitized(column, bins)
 
 
-def digitize_column_kmeans(column, nr_of_bins=10, bins=[]):
+def digitize_kmeans(column, nr_of_bins=10, bins=[]):
     if len(bins) == 0:
         discretizer = KBinsDiscretizer(n_bins=nr_of_bins, encode='ordinal', strategy='uniform')
         discretizer.fit(column.reshape(-1, 1))
