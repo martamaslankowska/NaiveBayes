@@ -1,3 +1,5 @@
+import copy
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import KBinsDiscretizer
@@ -13,7 +15,7 @@ from sklearn.preprocessing import KBinsDiscretizer
 
 def get_column_digitized(column, bins):
     atr_digitized = np.digitize(column, bins)
-    atr_bincount = np.bincount(atr_digitized)
+    atr_bincount = np.bincount(atr_digitized)[1:]
     atr_bincount = np.add(atr_bincount, np.ones(shape=(atr_bincount.shape), dtype=np.int))
     return atr_digitized, atr_bincount, bins
 
@@ -26,7 +28,10 @@ def digitize_column_equally(column, nr_of_bins=10, bins=[]):
 
 def digitize_column_by_frequency(column, nr_of_bins=10, bins=[]):
     if len(bins) == 0:
-        bins = np.linspace(np.min(column), np.max(column), num=nr_of_bins+1, endpoint=True)
+        column = copy.deepcopy(column)
+        column.sort()
+        bins = np.asarray(list(column)[::int(column.shape[0]/nr_of_bins)])
+        # bins = np.linspace(np.min(column), np.max(column), num=nr_of_bins+1, endpoint=True)
     return get_column_digitized(column, bins)
 
 
@@ -45,6 +50,11 @@ def digitize_X(X, digitize, nr_of_bins):
         atr_digitized, atr_bincount, bins = digitize(column, nr_of_bins=nr_of_bins)
         attributes_bins.append(bins)
     return attributes_bins
+
+
+def digitize_classes(Y):
+    _, indexes = np.unique(Y, return_inverse=True)
+    return indexes
 
 
 def count_conditional_probabilities(column, Y, c, bins):
@@ -81,11 +91,6 @@ def get_X_test_classes(X_test, Y, attributes_probs, attributes_bins, digitize):
 
     probs_multiplied *= classes_probs
     return classes[probs_multiplied.argmax(axis=1)]
-
-
-def digitize_classes(Y):
-    _, indexes = np.unique(Y, return_inverse=True)
-    return indexes
 
 
 def get_train_and_test_data(X, Y, i):

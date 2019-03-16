@@ -11,13 +11,15 @@ from drawing import *
 # warnings.filterwarnings('always')  # F-score warning
 
 
-digitize_methods = [digitize_column_equally, digitize_column_kmeans]
-digitize = digitize_methods[0]
+database_name = 'wine'
+
+digitize_methods = [digitize_column_equally, digitize_column_by_frequency, digitize_column_kmeans]
+digitize = digitize_methods[2]
 nr_of_bins = 10
 
 measures_for_all_k = []
 
-X, Y = get_dataset('iris')
+X, Y = get_dataset(database_name)
 Y = digitize_classes(Y)
 attributes_bins = digitize_X(X, digitize, nr_of_bins)
 
@@ -44,4 +46,4 @@ for k in folds:
 
 print(measures)
 measures = np.array(measures)
-draw_by_measures(measures, folds)
+draw_by_measures(measures, folds, database_name=database_name)
