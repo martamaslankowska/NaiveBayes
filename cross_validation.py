@@ -27,6 +27,7 @@ measures_all = []
 measures_for_k = []
 
 for k in folds:
+    # X_splitted, Y_splitted = split_data_stratified(X, Y, k)
     X_splitted, Y_splitted = split_data_to_chunks(X, Y, k)
     for i in range(k):
         print(f'{i+1}/{k} part of dataset:')
@@ -43,6 +44,7 @@ for k in folds:
 
     measures_all.append(count_measure_avg(np.array(measures_for_k)))
 
-print(measures_all)
+# print(measures_all)
 measures_all = np.array(measures_all)
 draw_by_measures(measures_all, folds, database_name=database_name)
+print_analysis_info(database_name)

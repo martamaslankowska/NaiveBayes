@@ -142,7 +142,24 @@ def split_set(set, i):
 
 def split_data_to_chunks(X, Y, k):
     data_len = Y.shape[0]
-    indices = np.arange(0, data_len, int(data_len / k) + 1)[1:]
+    indices = np.arange(0, data_len-1, int(data_len / k))[1:]
     X_splitted = np.vsplit(X, indices)
     Y_splitted = np.split(Y, indices)
     return X_splitted, Y_splitted
+
+
+def split_data_stratified(X, Y, k):
+    classes = np.unique(Y)
+    X_splitted, Y_splitted = [], []
+    for c in classes:
+        X_of_class_c = X[Y == c]
+        X_of_class_c_splitted, Y_of_class_c_splitted = split_data_to_chunks(X_of_class_c, Y[Y == c], k)
+        X_splitted.append(X_of_class_c_splitted)
+        Y_splitted.append(Y_of_class_c_splitted)
+
+    X_res, Y_res = [], []
+    for fold in range(k):
+        X_res.append(np.vstack([X_splitted[i][fold] for i in range(len(classes))]))
+        Y_res.append(np.concatenate([Y_splitted[i][fold] for i in range(len(classes))]))
+
+    return X_res, Y_res

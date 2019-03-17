@@ -25,6 +25,6 @@ cross_val_type = cross_val_types[0]
 
 ''' Parameters for analyzes '''
 database_names = ['iris', 'wine', 'glass', 'diabetes']
-bayes_types = ['normal', 'gaussian distribution']
+bayes_types = ['normal', 'gaussian-distribution']
 bayes_type = bayes_types[1]
 

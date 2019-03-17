@@ -4,7 +4,7 @@ from drawing import *
 from parameters import *
 
 # database names: (0) IRIS, (1) WINE, (2) GLASS and (4) DIABETES
-database_name = database_names[1]
+database_name = database_names[3]
 X, Y = get_dataset(database_name)
 
 
@@ -33,7 +33,7 @@ for cross_val_type in cross_val_types:
                 measures_all.append(count_measure_avg(np.array(measures_for_k)))
             print_analysis_info(database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type])
             measures = np.array(measures_all)
-            draw_by_measures(measures, folds, database_name=database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type])
+            draw_by_measures(measures, folds, database_name=database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type], saving=False)
 
     bayes_type = bayes_types[1]
     measures_all = []
@@ -52,4 +52,4 @@ for cross_val_type in cross_val_types:
         measures_all.append(count_measure_avg(np.array(measures_for_k)))
     print_analysis_info(database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type])
     measures = np.array(measures_all)
-    draw_by_measures(measures, folds, database_name=database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type])
+    draw_by_measures(measures, folds, database_name=database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type], saving=False)
