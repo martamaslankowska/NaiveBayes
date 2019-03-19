@@ -3,8 +3,8 @@ from measures import *
 from drawing import *
 from parameters import *
 
-# database names: (0) IRIS, (1) WINE, (2) GLASS and (4) DIABETES
-database_name = database_names[2]
+# database names: (0) IRIS, (1) WINE, (2) GLASS and (3) DIABETES
+database_name = database_names[0]
 X, Y = get_dataset(database_name)
 
 

@@ -131,7 +131,7 @@ def get_predicted_classes_gaussian(X_test, Y, means_and_stds):
 def get_train_and_test_data(X, Y, i):
     X_train, X_test = split_set(X, i)
     Y_train, Y_test = split_set(Y, i)
-    return X_train, Y_train, X_test, Y_test
+    return np.array(X_train), np.array(Y_train), np.array(X_test), np.array(Y_test)
 
 
 def split_set(set, i):
