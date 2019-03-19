@@ -11,7 +11,7 @@ from drawing import *
 # warnings.filterwarnings('always')  # F-score warning
 
 
-database_name = 'wine'
+database_name = 'glass'
 
 digitize_methods = [digitize_equally, digitize_by_frequency, digitize_kmeans]
 digitize = digitize_methods[2]
@@ -22,13 +22,13 @@ Y = digitize_classes(Y)
 attributes_bins = digitize_X(X, digitize, nr_of_bins)
 
 # k = 5
-folds = [2, 3, 5, 10]
+folds = [3, 5, 10]  #[2, 3, 5,
 measures_all = []
 measures_for_k = []
 
 for k in folds:
-    # X_splitted, Y_splitted = split_data_stratified(X, Y, k)
-    X_splitted, Y_splitted = split_data_to_chunks(X, Y, k)
+    X_splitted, Y_splitted = split_data_stratified(X, Y, k)
+    # X_splitted, Y_splitted = split_data_to_chunks(X, Y, k)
     for i in range(k):
         print(f'{i+1}/{k} part of dataset:')
         X_train, Y_train, X_test, Y_test = get_train_and_test_data(X_splitted, Y_splitted, i)

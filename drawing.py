@@ -31,4 +31,4 @@ def draw_by_measures(data, x_range, database_name='', params=[], saving=True):
                    if bayes_type == bayes_types[0] else f'{bayes_type}') +
                   f' & {cross_val_type} cross validation'
                   if len(database_name) > 0 else '')
-    plt.show()
+    # plt.show()
