@@ -4,7 +4,7 @@ from drawing import *
 from parameters import *
 
 # database names: (0) IRIS, (1) WINE, (2) GLASS and (4) DIABETES
-database_name = database_names[1]
+database_name = database_names[3]
 X, Y = get_dataset(database_name)
 
 measures_all = []
@@ -15,7 +15,10 @@ if bayes_type == bayes_types[0]:  # probabilities (normal way)
     attributes_bins = digitize_X(X, digitize, nr_of_bins)
 
 for k in folds:
-    X_splitted, Y_splitted = split_data_to_chunks(X, Y, k)
+    if cross_val_type == cross_val_types[0]:
+        X_splitted, Y_splitted = split_data_to_chunks(X, Y, k)
+    else:
+        X_splitted, Y_splitted = split_data_stratified(X, Y, k)
     for i in range(k):
         print(f'{i+1}/{k} part of dataset:')
         X_train, Y_train, X_test, Y_test = get_train_and_test_data(X_splitted, Y_splitted, i)

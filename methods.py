@@ -105,7 +105,7 @@ def bayes_gaussian(X, Y):
     means_and_stds = np.empty(shape=(classes.shape[0], 2, X.shape[1]))
     for c in range(classes.shape[0]):
         means_and_stds[c, 0] = np.mean(X[Y == classes[c]], axis=0)
-        means_and_stds[c, 1] = np.std(X[Y == classes[c]], axis=0)
+        means_and_stds[c, 1] = np.std(X[Y == classes[c]], axis=0) + 0.001  # smoothing
     return means_and_stds
 
 

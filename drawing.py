@@ -39,6 +39,7 @@ def draw_by_measures(data, x_range, database_name='', params=[], saving=True):
 
 def draw_by_measures_from_file(x_range, file_name, params, x_range_names=[], x_label='', database_name='', saving=True):
     data = np.load(file_name + '.npy')
+    print(data.shape)
     if params[1] < 0:
         data = data[params[0], :, params[2]]
     else:
@@ -66,11 +67,6 @@ def draw_by_measures_from_file(x_range, file_name, params, x_range_names=[], x_l
     plt.show()
 
 
-dig_methods = ['equal bins', 'equal frequency', 'K-means', 'gaussian']
-draw_by_measures_from_file([4, 8, 12, 16], 'matrix_diabetes_2cross-val_4digitize_4k_4measures_10bins',
-                           [1, 1, -1], database_name='diabetes', x_range_names=folds)
-
-
 def draw_histogram(data, bins=10):
     P.figure()
     n, bins, patches = P.hist(data, bins, normed=1, histtype='bar',
@@ -84,26 +80,42 @@ def draw_histogram(data, bins=10):
     P.show()
 
 
-def draw_histograms_pandas(X, Y):
+def draw_histograms_pandas(X, Y, column, saving=True, database_name=''):
     # Import Data
     # df = pd.read_csv("https://github.com/selva86/datasets/raw/master/mpg_ggplot2.csv")
     data = np.hstack((np.array([Y]).T, X))
     df = pd.DataFrame(data)
 
     # Prepare data
-    x_var = 1
+    x_var = column
     groupby_var = 0
     df_agg = df.loc[:, [x_var, groupby_var]].groupby(groupby_var)
     vals = [df[x_var].values.tolist() for i, df in df_agg]
 
     # Draw
-    plt.figure(figsize=(16, 9), dpi=80)
-    colors = [plt.cm.Spectral(i / float(len(vals) - 1)) for i in range(len(vals))]
+    # plt.figure(figsize=(16, 9), dpi=80)
+    # colors = [plt.cm.Spectral(i / float(len(vals) - 1)) for i in range(len(vals))]
+    colors = ['seagreen', 'indianred', 'gold', 'darkturquoise', 'sienna', 'fuchsia', 'darkmagenta']
     n, bins, patches = plt.hist(vals, bins=20, stacked=True,
                                 color=colors[:len(vals)])
+    plt.title(f'Dataset {database_name.upper()} - {column} attribute for {len(vals)} classes')
+    plt.savefig(f'histogram_{database_name}_{column}-attribute.png')
     plt.show()
 
 
-database_name = database_names[1]
-X, Y = get_dataset(database_name)
-draw_histograms_pandas(X, Y)
+if __name__ == "__main__":
+
+    database_name = database_names[2]
+    X, Y = get_dataset(database_name)
+    draw_histograms_pandas(X, Y, 5, saving=False)
+
+    # dig_methods = ['equal bins', 'equal frequency', 'K-means', 'gaussian']
+    # bins = [5, 10, 15, 20, 25, 40]
+    #
+    # draw_by_measures_from_file([4, 8, 12, 16, 20, 24], 'matrix_iris_2cross-val_6-bins_4k_4measures_digitize-frequency',
+    #                            [0, -1, 1], database_name='iris', x_range_names=bins)
+
+    # for data_name in database_names:
+    #     X, Y = get_dataset(data_name)
+    #     for column in range(1, X.shape[1]+1):
+    #         draw_histograms_pandas(X, Y, column, database_name=data_name)
