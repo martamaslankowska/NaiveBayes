@@ -104,16 +104,15 @@ def draw_histograms_pandas(X, Y, column, saving=True, database_name=''):
 
 
 if __name__ == "__main__":
+    # database_name = database_names[2]
+    # X, Y = get_dataset(database_name)
+    # draw_histograms_pandas(X, Y, 5, saving=False)
 
-    database_name = database_names[2]
-    X, Y = get_dataset(database_name)
-    draw_histograms_pandas(X, Y, 5, saving=False)
+    dig_methods = ['equal bins', 'equal frequency', 'K-means', 'gaussian']
+    bins = [5, 10, 15, 20, 25, 40]
 
-    # dig_methods = ['equal bins', 'equal frequency', 'K-means', 'gaussian']
-    # bins = [5, 10, 15, 20, 25, 40]
-    #
-    # draw_by_measures_from_file([4, 8, 12, 16, 20, 24], 'matrix_iris_2cross-val_6-bins_4k_4measures_digitize-frequency',
-    #                            [0, -1, 1], database_name='iris', x_range_names=bins)
+    draw_by_measures_from_file([4, 8, 12, 16, 20, 24], 'matrix_iris_2cross-val_6-bins_4k_4measures_digitize-equally',
+                               [1, -1, 3], database_name='iris', x_range_names=bins)
 
     # for data_name in database_names:
     #     X, Y = get_dataset(data_name)

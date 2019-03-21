@@ -38,7 +38,7 @@ def digitize_by_frequency(column, nr_of_bins=10, bins=[]):
 
 def digitize_kmeans(column, nr_of_bins=10, bins=[]):
     if len(bins) == 0:
-        discretizer = KBinsDiscretizer(n_bins=nr_of_bins, encode='ordinal', strategy='uniform')
+        discretizer = KBinsDiscretizer(n_bins=nr_of_bins, encode='ordinal', strategy='kmeans')
         discretizer.fit(column.reshape(-1, 1))
         bins = discretizer.bin_edges_[0].astype(float)
     return get_column_digitized(column, bins)

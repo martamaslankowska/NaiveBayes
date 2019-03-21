@@ -4,12 +4,16 @@ from drawing import *
 from parameters import *
 
 # database names: (0) IRIS, (1) WINE, (2) GLASS and (3) DIABETES
-database_name = database_names[0]
+database_name = database_names[3]
 X, Y = get_dataset(database_name)
 
-digitize = digitize_methods[1]  # frequency
+digitize = digitize_methods[0]  # frequency or equally
 bins_tests = [5, 10, 15, 20, 25, 40]
+
 # cross validation x digitize methods (+normal distribution) x k (folds) x measures
+# cross validation x number of bins x k (folds) x measures
+
+# data_matrix = np.empty(shape=(len(cross_val_types), len(digitize_methods)+1, len(folds), 4))
 data_matrix = np.empty(shape=(len(cross_val_types), len(bins_tests), len(folds), 4))
 
 for i, cross_val_type in enumerate(cross_val_types):
@@ -70,5 +74,7 @@ for i, cross_val_type in enumerate(cross_val_types):
     # measures = np.array(measures_all)
     # draw_by_measures(measures, folds, database_name=database_name, params=[bayes_type, digitize, nr_of_bins, cross_val_type], saving=False)
 
-np.save(f'matrix_{database_name}_2cross-val_6-bins_4k_4measures_digitize-frequency.npy', data_matrix)
+
+# np.save(f'matrix_{database_name}_2cross-val_4digitize_4k_4measures_10bins.npy', data_matrix)
+np.save(f'matrix_{database_name}_2cross-val_6-bins_4k_4measures_digitize-equally.npy', data_matrix)
 print(data_matrix.shape)

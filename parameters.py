@@ -22,11 +22,11 @@ nr_of_bins = 10
 ''' Parameters for cross validation '''
 folds = [2, 3, 5, 10]
 cross_val_types = ['normal', 'stratified']
-cross_val_type = cross_val_types[1]
+cross_val_type = cross_val_types[0]
 
 ''' Parameters for analyzes '''
 database_names = ['iris', 'wine', 'glass', 'diabetes']
 
 bayes_types = ['normal', 'gaussian-distribution']
-bayes_type = bayes_types[1]
+bayes_type = bayes_types[0]
 

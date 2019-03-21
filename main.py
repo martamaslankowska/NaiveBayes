@@ -4,7 +4,7 @@ from drawing import *
 from parameters import *
 
 # database names: (0) IRIS, (1) WINE, (2) GLASS and (4) DIABETES
-database_name = database_names[3]
+database_name = database_names[2]
 X, Y = get_dataset(database_name)
 
 measures_all = []
